@@ -18,6 +18,8 @@ designed to work easily with STM32 microcontrollers using HAL or other platforms
 
 ## File Structure
 
+```c
+
 icm42688-driver/
 ├── inc/ # Header files (.h)
 │ ├── icm42688.h
@@ -31,6 +33,7 @@ icm42688-driver/
 │ └── main.c # (coming soon)
 ├── README.md # This file
 
+```
 
 ---
 
