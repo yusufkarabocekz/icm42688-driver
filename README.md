@@ -62,7 +62,7 @@ void app_loop(void) {
     }
 }
 
-```c
+```
 
 ---
 
