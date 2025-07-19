@@ -1,9 +1,9 @@
-/*
-* icm-42688.h
-* 
-* Created by: July, 2025
-*       Author: Yusuf Karaböcek
-*/
+/**
+ * @file icm-42688.h
+ * @brief ICM-42688 6-axis IMU sensor driver header
+ * @author Yusuf Karaböcek
+ * @date July 2025
+ */
 
 #ifndef ICM_42688_H
 #define ICM_42688_H
@@ -11,75 +11,105 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-// ICM-42688 I2C Adresi (default: 0x68 veya 0x69)
-#define ICM_42688_I2C_ADDRESS 0x68 
+/* Device Configuration */
+#define ICM_42688_I2C_ADDRESS    0x68    /**< Default I2C address */
+#define WHO_AM_I_REG             0x75    /**< Device identification register */
+#define ICM42688_REG_DEVICE_CONFIG 0x11  /**< Device configuration register */
+#define ICM42688_PWR_MGMT0       0x4E    /**< Power management register */
 
-// Kimlik registerı (WHO_AM_I)
-#define WHO_AM_I_REG 0x75
+/* Temperature Data Registers */
+#define ICM42688_REG_TEMP_DATA1  0x1D    /**< Temperature data MSB */
+#define ICM42688_REG_TEMP_DATA2  0x1E    /**< Temperature data LSB */
 
-// Temel konfigürasyon ve güç yönetimi registerları
-#define ICM42688_REG_DEVICE_CONFIG 0x11
-#define ICM42688_PWR_MGMT0 0x4E
+/* Accelerometer Data Registers */
+#define ICM42688_REG_ACCEL_DATA_X1 0x1F  /**< Accelerometer X-axis MSB */
+#define ICM42688_REG_ACCEL_DATA_X0 0x20  /**< Accelerometer X-axis LSB */
+#define ICM42688_REG_ACCEL_DATA_Y1 0x21  /**< Accelerometer Y-axis MSB */
+#define ICM42688_REG_ACCEL_DATA_Y0 0x22  /**< Accelerometer Y-axis LSB */
+#define ICM42688_REG_ACCEL_DATA_Z1 0x23  /**< Accelerometer Z-axis MSB */
+#define ICM42688_REG_ACCEL_DATA_Z0 0x24  /**< Accelerometer Z-axis LSB */
 
-// Sıcaklık veri registerları
-#define ICM42688_REG_TEMP_DATA1 0x1D
-#define ICM42688_REG_TEMP_DATA2 0x1E
+/* Gyroscope Data Registers */
+#define ICM42688_REG_GYRO_DATA_X1 0x25   /**< Gyroscope X-axis MSB */
+#define ICM42688_REG_GYRO_DATA_X0 0x26   /**< Gyroscope X-axis LSB */
+#define ICM42688_REG_GYRO_DATA_Y1 0x27   /**< Gyroscope Y-axis MSB */
+#define ICM42688_REG_GYRO_DATA_Y0 0x28   /**< Gyroscope Y-axis LSB */
+#define ICM42688_REG_GYRO_DATA_Z1 0x29   /**< Gyroscope Z-axis MSB */
+#define ICM42688_REG_GYRO_DATA_Z0 0x2A   /**< Gyroscope Z-axis LSB */
 
-// İvmeölçer veri registerları
-#define ICM42688_REG_ACCEL_DATA_X1 0x1F
-#define ICM42688_REG_ACCEL_DATA_X0 0x20
-#define ICM42688_REG_ACCEL_DATA_Y1 0x21
-#define ICM42688_REG_ACCEL_DATA_Y0 0x22
-#define ICM42688_REG_ACCEL_DATA_Z1 0x23
-#define ICM42688_REG_ACCEL_DATA_Z0 0x24
+/* Configuration Registers */
+#define ICM42688_REG_ACCEL_CONFIG0 0x50  /**< Accelerometer configuration */
+#define ICM42688_REG_GYRO_CONFIG0  0x4F  /**< Gyroscope configuration */
 
-// Jiroskop veri registerları
-#define ICM42688_REG_GYRO_DATA_X1 0x25
-#define ICM42688_REG_GYRO_DATA_X0 0x26
-#define ICM42688_REG_GYRO_DATA_Y1 0x27
-#define ICM42688_REG_GYRO_DATA_Y0 0x28
-#define ICM42688_REG_GYRO_DATA_Z1 0x29
-#define ICM42688_REG_GYRO_DATA_Z0 0x2A
-
-// Konfigürasyon registerları
-#define ICM42688_REG_ACCEL_CONFIG0 0x50
-#define ICM42688_REG_GYRO_CONFIG0 0x4F
-
-// Sensör verilerini tutan yapı
+/**
+ * @brief Sensor data structure
+ */
 typedef struct {
-    int16_t accel_x;
-    int16_t accel_y;
-    int16_t accel_z;
-    int16_t gyro_x;
-    int16_t gyro_y;
-    int16_t gyro_z;
-    int16_t temp;
+    int16_t accel_x;    /**< Accelerometer X-axis data */
+    int16_t accel_y;    /**< Accelerometer Y-axis data */
+    int16_t accel_z;    /**< Accelerometer Z-axis data */
+    int16_t gyro_x;     /**< Gyroscope X-axis data */
+    int16_t gyro_y;     /**< Gyroscope Y-axis data */
+    int16_t gyro_z;     /**< Gyroscope Z-axis data */
+    int16_t temp;       /**< Temperature data */
 } icm42688_data_t;
 
-// Haberlesme soyutlaması: I2C veya SPI driverları buraya atanir
+/**
+ * @brief Communication bus abstraction structure
+ */
 typedef struct {
-    int (*read)(uint8_t reg, uint8_t *data, uint16_t len);
-    int (*write)(uint8_t reg, uint8_t *data, uint16_t len);
+    int (*read)(uint8_t reg, uint8_t *data, uint16_t len);   /**< Read function pointer */
+    int (*write)(uint8_t reg, uint8_t *data, uint16_t len);  /**< Write function pointer */
 } icm42688_bus_t;
 
-// Sensör context yapısı -bus struct ı icerir
+/**
+ * @brief Main sensor context structure
+ */
 typedef struct {
-    icm42688_bus_t bus;
-}icm42688_t;
+    icm42688_bus_t bus; /**< Communication bus interface */
+} icm42688_t;
 
-// ICM-42688 başlatma fonksiyonu
+/**
+ * @brief Initialize ICM-42688 sensor
+ * @param dev Pointer to sensor context
+ * @return 0 on success, negative value on error
+ */
 int icm42688_init(icm42688_t *dev);
 
-// Tüm sensör verilerini okuyan fonksiyon
+/**
+ * @brief Read all sensor data (accelerometer, gyroscope, temperature)
+ * @param dev Pointer to sensor context
+ * @param data Pointer to data structure
+ * @return 0 on success, negative value on error
+ */
 int icm42688_read_all(icm42688_t *dev, icm42688_data_t *data);
 
-// Sıcaklık verisini okuyan fonksiyon
+/**
+ * @brief Read temperature data
+ * @param dev Pointer to sensor context
+ * @param temp Pointer to temperature value
+ * @return 0 on success, negative value on error
+ */
 int icm42688_read_temp(icm42688_t *dev, int16_t *temp);
 
-// Accel verisi okuyan fonksiyon
+/**
+ * @brief Read accelerometer data
+ * @param dev Pointer to sensor context
+ * @param accel_x Pointer to X-axis acceleration
+ * @param accel_y Pointer to Y-axis acceleration
+ * @param accel_z Pointer to Z-axis acceleration
+ * @return 0 on success, negative value on error
+ */
 int icm42688_read_accel(icm42688_t *dev, int16_t *accel_x, int16_t *accel_y, int16_t *accel_z);
 
-// Gyro verisi okuyan fonksiyon
+/**
+ * @brief Read gyroscope data
+ * @param dev Pointer to sensor context
+ * @param gyro_x Pointer to X-axis angular velocity
+ * @param gyro_y Pointer to Y-axis angular velocity
+ * @param gyro_z Pointer to Z-axis angular velocity
+ * @return 0 on success, negative value on error
+ */
 int icm42688_read_gyro(icm42688_t *dev, int16_t *gyro_x, int16_t *gyro_y, int16_t *gyro_z);
 
 #endif // ICM_42688_H

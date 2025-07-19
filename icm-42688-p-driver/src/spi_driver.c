@@ -1,19 +1,19 @@
-/*
-* spi_driver.c
-* 
-* Created by: July, 2025
-*       Author: Yusuf Karaböcek
-*/
+/**
+ * @file spi_driver.c
+ * @brief SPI communication driver implementation for ICM-42688
+ * @author Yusuf Karaböcek
+ * @date July 2025
+ */
 
 #include "spi_driver.h"
 #include "stm32f1xx_hal.h"
 
 extern SPI_HandleTypeDef hspi1;
 
-#define READ_FLAG 0x80 // SPI icin okuma biti
+#define READ_FLAG 0x80 /**< SPI read flag bit */
 
 void spi_cs_enable(void) {
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET); // pin secimi de main.c de yapilabilir
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET); /* Pin selection can be done in main.c */
 }
 
 void spi_cs_disable(void) {
